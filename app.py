@@ -66,6 +66,7 @@ def signup():
     """
 
     form = UserAddForm()
+    user = g.user
 
     if form.validate_on_submit():
         try:
@@ -80,14 +81,14 @@ def signup():
 
         except IntegrityError:
             flash("Username already taken", 'danger')
-            return render_template('users/signup.html', form=form)
+            return render_template('users/signup.html', form=form, user=user)
 
         do_login(user)
 
         return redirect("/")
 
     else:
-        return render_template('users/signup.html', form=form)
+        return render_template('users/signup.html', form=form, user=user)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -95,7 +96,7 @@ def login():
     """Handle user login."""
 
     form = LoginForm()
-
+    user = g.user
     if form.validate_on_submit():
         user = User.authenticate(form.username.data,
                                  form.password.data)
@@ -107,7 +108,7 @@ def login():
 
         flash("Invalid credentials.", 'danger')
 
-    return render_template('users/login.html', form=form)
+    return render_template('users/login.html', form=form, user=user)
 
 
 @app.route('/logout')
@@ -223,7 +224,7 @@ def profile():
         pwd= form.password.data
         username = g.user.username
         user=User.authenticate(username, pwd)
-        raise
+        
 
         if user:
             user.email = form.email.data or g.user.email
@@ -276,6 +277,7 @@ def messages_add():
         return redirect("/")
 
     form = MessageForm()
+    user = g.user
 
     if form.validate_on_submit():
         msg = Message(text=form.text.data)
@@ -284,7 +286,7 @@ def messages_add():
 
         return redirect(f"/users/{g.user.id}")
 
-    return render_template('messages/new.html', form=form)
+    return render_template('messages/new.html', form=form, user=user)
 
 
 @app.route('/messages/<int:message_id>', methods=["GET"])
@@ -321,7 +323,7 @@ def homepage():
     - anon users: no messages
     - logged in: 100 most recent messages of followed_users
     """
-
+    user= None
     if g.user:
         messages = (Message
                     .query
@@ -329,10 +331,12 @@ def homepage():
                     .limit(100)
                     .all())
 
-        return render_template('home.html', messages=messages)
+        user= g.user
+        return render_template('home.html', messages=messages, user=user)
 
     else:
-        return render_template('home-anon.html')
+        user = g.user
+        return render_template('home-anon.html', user=user)
 
 
 ##############################################################################

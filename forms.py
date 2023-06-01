@@ -27,8 +27,8 @@ class LoginForm(FlaskForm):
 
 class EditProfile(FlaskForm):
 
-    username = StringField('Username:', validators=[DataRequired()])
-    email = EmailField('E-mail', validators=[Email()])
+    username = StringField('Username:')
+    email = EmailField('E-mail')
     image_url= StringField('Image_url:')
     header_image_url= StringField('header_image_url')
     bio = TextAreaField('Biography:')
