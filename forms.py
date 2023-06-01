@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField
-from wtforms.validators import DataRequired, Email, Length
+from wtforms import StringField, PasswordField, TextAreaField, EmailField, TextAreaField
+from wtforms.validators import DataRequired, Email, Length, InputRequired
 
 
 class MessageForm(FlaskForm):
@@ -23,3 +23,13 @@ class LoginForm(FlaskForm):
 
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=6)])
+
+
+class EditProfile(FlaskForm):
+
+    username = StringField('Username:', validators=[DataRequired()])
+    email = EmailField('E-mail', validators=[Email()])
+    image_url= StringField('Image_url:')
+    header_image_url= StringField('header_image_url')
+    bio = TextAreaField('Biography:')
+    password= PasswordField('Password', validators=[InputRequired()])
