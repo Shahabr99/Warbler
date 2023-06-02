@@ -215,8 +215,9 @@ def stop_following(follow_id):
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
     """Update profile for current user."""
-    form = EditProfile(obj=user)
     user=g.user
+    form = EditProfile(obj=user)
+    
 
     if not g.user:
         flash('Anauthorized access', 'danger')
