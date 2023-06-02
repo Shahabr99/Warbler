@@ -337,7 +337,7 @@ def homepage():
                     .all())
 
       
-        return render_template('home.html', messages=messages)
+        return render_template('home.html', messages=messages, followings=following_ids)
 
     else:
         
