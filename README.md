@@ -10,10 +10,10 @@ There are also tesing files for testing the model, app and etc.
 * PostgreSQL
 
 ### What users see...
-![homepage][/images/homepage.png]
+![homepage](/images/homepage.png)
 
-![home][/images/home.png]
+![home](/images/home.png)
 
-![signup][/images/signup.png]
+![signup](/images/signup.png)
 
-![user][/images/user.png]
+![user](/images/user.png)
