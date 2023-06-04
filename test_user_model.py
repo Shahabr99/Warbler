@@ -26,7 +26,8 @@ from app import app
 # once for all tests --- in each test, we'll delete the data
 # and create fresh new clean test data
 
-db.create_all()
+with app.app_context(): 
+    db.create_all()
 
 
 class UserModelTestCase(TestCase):
@@ -56,3 +57,11 @@ class UserModelTestCase(TestCase):
         # User should have no messages & no followers
         self.assertEqual(len(u.messages), 0)
         self.assertEqual(len(u.followers), 0)
+
+    def test_repr(self):
+        """Testing the __repr__ dunder method"""
+        test_user = User(username="test1", email="test@gmail.com", password='test123')
+        result = repr(test_user)
+        expected = "User 1: test1, test@gmail.com"
+        self.assertEqual(result, expected)
+        
