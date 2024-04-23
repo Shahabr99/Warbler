@@ -48,6 +48,10 @@ class Likes(db.Model):
         unique=True
     )
 
+    @classmethod
+    def add_liked_messages(cls, message_id, user_id):
+        liked_message = Likes(message_id=message_id, user_id=user_id)
+        db.session.add(liked_message)
 
 class User(db.Model):
     """User in the system."""
@@ -95,8 +99,8 @@ class User(db.Model):
     )
 
     messages = db.relationship('Message')
-    
-# TODO
+
+
     followers = db.relationship(
         "User",
         secondary="follows",
@@ -171,6 +175,9 @@ class User(db.Model):
         return False
 
 
+    
+
+
 class Message(db.Model):
     """An individual message ("warble")."""
 
@@ -199,6 +206,21 @@ class Message(db.Model):
     )
 
     user = db.relationship('User')
+
+
+    # adds a message to the database
+    @classmethod
+    def add_message(cls, text, user_id):
+        message = Message(text=text, user_id=user_id)
+        db.session.add(message)
+
+        return message
+
+
+
+
+
+
 
 
 def connect_db(app):

@@ -20,6 +20,11 @@ body.error-404 {
   cursor: pointer;
 }
 
+.btn:active {
+  stroke: rgb(186, 64, 64);
+  fill: rgb(186, 64, 64);
+}
+
 /* ======================= Nav */
 
 .navbar {

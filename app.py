@@ -1,11 +1,11 @@
 import os
 
-from flask import Flask, render_template, request, flash, redirect, session, g
+from flask import Flask, render_template, request, flash, redirect, session, g, abort
 # from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, MessageForm, EditProfile
-from models import db, connect_db, User, Message
+from models import db, connect_db, User, Message, Likes
 
 CURR_USER_KEY = "curr_user"
 
@@ -211,7 +211,7 @@ def stop_following(follow_id):
 
     return redirect(f"/users/{g.user.id}/following")
 
-
+# TODO: May need changes
 @app.route('/users/<int:user_id>/likes', methods=["GET"])
 def show_likes(user_id):
     if not g.user:
@@ -220,30 +220,35 @@ def show_likes(user_id):
     user = User.query.get_or_404(user_id)
     return render_template('users/likes.html', user=user, likes=user.likes)
 
-
+# FIXME: and should return to the same page
 @app.route('/messages/<int:message_id>/like', methods=['POST'])
 def add_like(message_id):
     """Adding a like message feature"""
     if not g.user:
         flash("Access denied", 'danger')
         return redirect("/")
+    
 
-    liked_message = Message.query.get_or_404(message_id)
+# TODO: what if the posted messsage is in DB
+    # liked_message = Message.query.get_or_404(message_id)
+    liked_message = Likes.add_liked_messages(message_id = message_id, user_id=g.user.id)
     if liked_message.user_id == g.user.id:
         return abort(403)
     
+    
     user_likes = g.user.likes
     if liked_message in user_likes:
-        g.user.likes = [like for like in user_likes if like != liked_message ]
+        g.user.likes = [ like for like in user_likes if like != liked_message ]
     else:
         g.user.likes.append(liked_message)
     db.session.commit()
     return redirect("/")
 
+
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
     """Update profile for current user."""
-    user=g.user
+    user= g.user
     form = EditProfile(obj=user)
     
 
@@ -311,7 +316,11 @@ def messages_add():
     
 
     if form.validate_on_submit():
-        msg = Message(text=form.text.data)
+        # add message
+        # msg = Message(text=form.text.data)
+        print(form.data)
+        msg = Message.add_message(text=form.text.data, user_id=g.user.id)
+        
         g.user.messages.append(msg)
         db.session.commit()
 
@@ -354,9 +363,11 @@ def homepage():
     - anon users: no messages
     - logged in: 100 most recent messages of followed_users
     """
-    
+
+    # TODO: needs changes to render liked_messages 
     if g.user:
         following_ids = [f.id for f in g.user.following] + [g.user.id]
+        # following_ids = [f.id for f in g.user.following]
         
         messages = (Message
                     .query

@@ -59,9 +59,11 @@
           >
           <p>{{ msg.text }}</p>
         </div>
+        <!-- made a route change in form tag. route was /user/add_like/{{msg.id}} -->
         <form
           method="POST"
-          action="/users/add_like/{{ msg.id }}"
+          
+          action="/messages/{{ msg.id }}/like"
           id="messages-form"
         >
           <button
