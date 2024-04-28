@@ -189,9 +189,12 @@ def add_follow(follow_id):
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
-
+    
+    # TODO: check to see if it is adding the followed users
     followed_user = User.query.get_or_404(follow_id)
     g.user.following.append(followed_user)
+    
+   
     db.session.commit()
 
     return redirect(f"/users/{g.user.id}/following")
@@ -364,19 +367,26 @@ def homepage():
     - logged in: 100 most recent messages of followed_users
     """
 
-    # TODO: needs changes to render liked_messages 
     if g.user:
-        following_ids = [f.id for f in g.user.following] + [g.user.id]
-        # following_ids = [f.id for f in g.user.following]
         
+        following_ids = [f.id for f in g.user.following]
+        
+       
         messages = (Message
                     .query
                     .order_by(Message.timestamp.desc())
-                    .limit(100)
                     .all())
-
+        
+       
         liked_msg = [msg.id for msg in g.user.likes]
-        return render_template('home.html', messages=messages, followings=following_ids)
+        # all_messages = []
+
+       
+        # for id in following_ids:
+        #     msg = Message.query.filter(Message.user_id == id)
+        #     all_messages.append(msg)
+            
+        return render_template('home.html', messages = messages, liked_msg = liked_msg, followings=following_ids)
 
     else:
         

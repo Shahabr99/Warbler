@@ -53,6 +53,7 @@ class Likes(db.Model):
         liked_message = Likes(message_id=message_id, user_id=user_id)
         db.session.add(liked_message)
 
+
 class User(db.Model):
     """User in the system."""
 
@@ -215,11 +216,7 @@ class Message(db.Model):
         db.session.add(message)
 
         return message
-
-
-
-
-
+    
 
 
 
